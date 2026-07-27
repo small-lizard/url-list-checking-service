@@ -31,7 +31,7 @@ export function useHandleActiveState() {
                 setActiveJobData(jobData);
                 setIsPolling(true);
             } catch (error: unknown) {
-                setErrorGetJob(error instanceof Error ? error.message : 'Failed to fetch active job data');
+                setErrorGetJob('Failed to fetch active job data');
                 setActiveJobData(null);
                 setIsPolling(false);
             } finally {

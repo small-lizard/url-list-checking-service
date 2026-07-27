@@ -10,7 +10,8 @@ export async function createJob(urls: string[]) {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to create job');
+        const rawBody = await response.text();
+        throw new Error(JSON.parse(rawBody).message || 'Failed to create job');
     }
 
     const result = await response.json();
@@ -27,7 +28,8 @@ export async function getAllJobs() {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to fetch jobs');
+        const rawBody = await response.text();
+        throw new Error(JSON.parse(rawBody).message || 'Failed to get job');
     }
 
     const result = await response.json();
@@ -44,7 +46,8 @@ export async function getJob(jobId: string) {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to fetch job');
+        const rawBody = await response.text();
+        throw new Error(JSON.parse(rawBody).message || 'Failed to get job');
     }
 
     const result = await response.json();
@@ -61,11 +64,11 @@ export async function cancelJob(jobId: string) {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to cancel job');
+        const rawBody = await response.text();
+        throw new Error(JSON.parse(rawBody).message || 'Failed to cancel job');
     }
 
     const result = await response.json();
 
     return result;
 }
-

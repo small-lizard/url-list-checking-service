@@ -31,7 +31,7 @@ export function JobsList() {
         fetchJobs();
     }, [activeJobId, setJobsList, setLoadingGetAllJobs, setErrorGetAllJobs]);
 
-    if (jobsList.length === 0) {
+    if (jobsList.length === 0 || (jobsList.length === 1 && jobsList[0].jobId === activeJobId)) {
         return null;
     }
 

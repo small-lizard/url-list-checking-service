@@ -27,13 +27,7 @@ export function NewJobForm() {
             setErrorCreateJob(null);
             setLoadingCreateJob(true);
             const response = await createJob(urls);
-
-            if (!response.jobId) {
-                setLoadingCreateJob(false);
-                setErrorCreateJob('Failed to create job');
-                return;
-            }
-
+            
             setActiveJobId(response.jobId);
             setUrlsText("");
         } catch (error: unknown) {
