@@ -1,16 +1,17 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
 import { createJob } from "../../services/jobsService";
 import { useJobsStore } from "../../store/useJobsStore";
 
 export function NewJobForm() {
-    const setActiveJob = useJobsStore((state) => state.setActiveJob);
+    const setActiveJobId = useJobsStore((state) => state.setActiveJobId);
+    const setLoadingCreateJob = useJobsStore((state) => state.setLoadingCreateJob);
+    const setErrorCreateJob = useJobsStore((state) => state.setErrorCreateJob);
+    const loadingCreateJob = useJobsStore((state) => state.loadingCreateJob);
+    const errorCreateJob = useJobsStore((state) => state.errorCreateJob);
     const [urlsText, setUrlsText] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
         const urls = urlsText
             .split('\n')
@@ -18,37 +19,34 @@ export function NewJobForm() {
             .filter(Boolean);
 
         if (urls.length === 0) {
-            setError('Please enter at least one URL.');
+            setErrorCreateJob('Please enter at least one URL.');
             return;
         }
 
-        setIsSubmitting(true);
-        setError(null);
-
         try {
+            setErrorCreateJob(null);
+            setLoadingCreateJob(true);
             const response = await createJob(urls);
 
             if (!response.jobId) {
-                throw new Error('Failed to create job');
+                setLoadingCreateJob(false);
+                setErrorCreateJob('Failed to create job');
+                return;
             }
 
-            setActiveJob(response.jobId);
+            setActiveJobId(response.jobId);
             setUrlsText("");
-
-            setIsSubmitting(false);
-            setError(null);
-
-        } catch (error: any) {
-            setError(error.message);
+        } catch (error: unknown) {
+            setErrorCreateJob(error instanceof Error ? error.message : 'Failed to create job');
         } finally {
-            setIsSubmitting(false);
+            setLoadingCreateJob(false);
         }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4" >
-            <label htmlFor="urls">
-                Enter URLs (one per line):
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-gray-100 p-[30px] border border-none rounded-[20px]" >
+            <label htmlFor="urls" className="font-bold text-[22px]">
+                Введите URL-адреса (по одному на строку)
             </label>
             <textarea
                 id="urls"
@@ -56,16 +54,18 @@ export function NewJobForm() {
                 value={urlsText}
                 rows={6}
                 cols={50}
-                placeholder="Enter your URLs here..."
+                className="border border-gray-500 rounded-[20px] p-[15px] bg-white"
+                placeholder="Введите ваши URL-адреса здесь..."
                 required
                 onChange={(e) => setUrlsText(e.target.value)}>
             </textarea>
             <button
                 type="submit"
-                disabled={isSubmitting}>
-                Submit
+                className="bg-blue-700 text-white font-bold py-[20px] rounded-[20px] hover:bg-blue-500 disabled:opacity-50 cursor-pointer text-[16px]"
+                disabled={loadingCreateJob}>
+                Запустить проверку
             </button>
-            {error && <p className="error">{error}</p>}
+            {errorCreateJob && <p className="text-red-500">{errorCreateJob}</p>}
         </form>
     )
 }
