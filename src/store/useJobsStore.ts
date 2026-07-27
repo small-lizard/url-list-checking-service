@@ -75,7 +75,6 @@ export const useJobsStore = create<JobsStore>()(
             partialize: (state) => ({
                 activeJobId: state.activeJobId,
                 activeJobData: state.activeJobData,
-                jobsList: state.jobsList,
             }),
         }
     )
