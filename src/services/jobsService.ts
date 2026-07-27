@@ -1,5 +1,7 @@
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 export async function createJob(urls: string[]) {
-    const response = await fetch('http://localhost:3000/api/jobs', {
+    const response = await fetch(`${baseUrl}/api/jobs`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -17,7 +19,7 @@ export async function createJob(urls: string[]) {
 }
 
 export async function getAllJobs() {
-    const response = await fetch('http://localhost:3000/api/jobs', {
+    const response = await fetch(`${baseUrl}/api/jobs`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -34,7 +36,7 @@ export async function getAllJobs() {
 }
 
 export async function getJob(jobId: string) {
-    const response = await fetch(`http://localhost:3000/api/jobs/${jobId}`, {
+    const response = await fetch(`${baseUrl}/api/jobs/${jobId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -51,7 +53,7 @@ export async function getJob(jobId: string) {
 }
 
 export async function cancelJob(jobId: string) {
-    const response = await fetch(`http://localhost:3000/api/jobs/${jobId}`, {
+    const response = await fetch(`${baseUrl}/api/jobs/${jobId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
